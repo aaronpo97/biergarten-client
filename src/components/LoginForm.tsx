@@ -1,7 +1,9 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useContext, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import loginUser from '../api/loginUser';
+import AuthContext, { AuthContextValue } from '../contexts/AuthContext';
+
 import FormButton from './ui/FormButton';
 import FormTextInput from './ui/FormTextInput';
 
@@ -17,6 +19,7 @@ const LoginForm: FunctionComponent<{}> = () => {
       formState: { errors },
    } = useForm<IFormInput>();
 
+   const { setCurrentUser } = useContext(AuthContext) as AuthContextValue;
    const [errorMessage, setErrorMessage] = useState<null | string>(null);
 
    const navigate = useNavigate();
@@ -30,6 +33,7 @@ const LoginForm: FunctionComponent<{}> = () => {
          localStorage.setItem('accessToken', accessToken);
          localStorage.setItem('userId', id);
          localStorage.setItem('refreshToken', refreshToken);
+         setCurrentUser({ username, id });
          navigate('/beers');
       }
       if (response.status === 400) {
@@ -50,6 +54,7 @@ const LoginForm: FunctionComponent<{}> = () => {
                placeholder='password'
                formRegister={register('password', { required: true })}
                error={errors.password}
+               isPassword
             />
          </div>
          {errorMessage && (

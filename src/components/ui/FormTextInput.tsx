@@ -5,11 +5,18 @@ interface FormInputProps {
    placeholder: string;
    formRegister: UseFormRegisterReturn<string>;
    error: FieldError | undefined;
+   // eslint-disable-next-line react/require-default-props
+   isPassword?: boolean;
 }
 
-const FormTextInput: FunctionComponent<FormInputProps> = ({ placeholder, formRegister, error }) => (
+const FormTextInput: FunctionComponent<FormInputProps> = ({
+   placeholder,
+   formRegister,
+   error,
+   isPassword = false,
+}) => (
    <input
-      type='text'
+      type={isPassword ? 'password' : 'text'}
       placeholder={placeholder}
       className={`form-control block w-full px-4 py-2 text-xl font-normal 
               text-gray-700 bg-white bg-clip-padding border border-solid 

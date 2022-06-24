@@ -1,37 +1,15 @@
 import BeerPostI from '../types/BeerPostI';
 import isValidUuid from '../util/isValidUuid';
-
-interface SuccessResponse {
-   message: string;
-   status: 200;
-   success: true;
-   payload: BeerPostI;
-   newAccessToken?: string;
-}
-
-interface ErrorResponse {
-   message: string;
-   status: number;
-   success: false;
-}
+import authHeaders from './authHeaders';
+import ErrorResponse from './utils/ErrorResponse';
+import SuccessResponse from './utils/SuccessResponse';
 
 const getBeerPostById = async (id: string) => {
-   const accessToken = localStorage.getItem('accessToken');
-   const refreshToken = localStorage.getItem('refreshToken');
-
-   if (!isValidUuid) {
+   if (!isValidUuid(id)) {
       throw new Error('Invalid id.');
    }
 
-   if (!(accessToken && refreshToken)) {
-      throw new Error('Cannot authenticate user.');
-   }
-
-   const headers = new Headers();
-   headers.append('x-access-token', accessToken);
-   headers.append('x-auth-token', refreshToken);
-
-   const response = await fetch(`/api/beers/${id}`, { headers });
-   return response.json() as Promise<SuccessResponse | ErrorResponse>;
+   const response = await fetch(`/api/beers/${id}`, { headers: authHeaders });
+   return response.json() as Promise<SuccessResponse<BeerPostI> | ErrorResponse>;
 };
 export default getBeerPostById;

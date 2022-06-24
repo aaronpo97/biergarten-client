@@ -16,7 +16,7 @@ const BeerPostById: FunctionComponent<BeerPostByIdProps> = () => {
    const [beerPost, setBeerPost] = useState<BeerPostI | null>(null);
    useEffect(() => {
       getBeerPostById(id).then((response) => {
-         if (response.success) {
+         if ('payload' in response) {
             setBeerPost(response.payload);
          }
       });

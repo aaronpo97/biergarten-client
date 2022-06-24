@@ -6,7 +6,7 @@ import BeerPostI from '../types/BeerPostI';
 interface BeerPostsIndexProps {}
 
 const BeerPostsIndex: FunctionComponent<BeerPostsIndexProps> = () => {
-   const [beerPosts, setBeerPosts] = useState<BeerPostI[] | null>(null);
+   const [beerPosts, setBeerPosts] = useState<BeerPostI[]>([]);
    // eslint-disable-next-line no-unused-vars
    const [pageNum, setPageNum] = useState<number>(1);
 
@@ -18,7 +18,7 @@ const BeerPostsIndex: FunctionComponent<BeerPostsIndexProps> = () => {
 
    return (
       <section className='xl:container xl:mx-auto px-100'>
-         {beerPosts?.length && beerPosts.map((beerPost) => <BeerCard beerPost={beerPost} />)}
+         {beerPosts.length && beerPosts.map((beerPost) => <BeerCard beerPost={beerPost} />)}
       </section>
    );
 };
