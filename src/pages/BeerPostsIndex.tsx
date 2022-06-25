@@ -12,13 +12,17 @@ const BeerPostsIndex: FunctionComponent<BeerPostsIndexProps> = () => {
 
    useEffect(() => {
       getAllBeerPosts(pageNum, 10).then((response) => {
+         if (!('payload' in response)) {
+            return;
+         }
          setBeerPosts(response.payload.allBeers);
       });
    }, [pageNum]);
 
    return (
       <section className='xl:container xl:mx-auto px-100'>
-         {beerPosts.length && beerPosts.map((beerPost) => <BeerCard beerPost={beerPost} />)}
+         {!!beerPosts.length &&
+            beerPosts.map((beerPost) => <BeerCard beerPost={beerPost} key={beerPost.id} />)}
       </section>
    );
 };

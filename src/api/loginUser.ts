@@ -1,19 +1,7 @@
-interface SuccessResponse {
-   message: 'Successfully logged in.';
-   status: 200;
-   success: true;
-   payload: { id: string; refreshToken: string; accessToken: string };
-}
+import ErrorResponse from './utils/response/ErrorResponse';
+import SuccessResponse from './utils/response/SuccessResponse';
 
-interface ErrorResponse {
-   status: 400;
-   message: string;
-   success: false;
-   details?: unknown[];
-   stack?: string;
-}
-
-const loginUser = async (username: string, password: string): Promise<SuccessResponse | ErrorResponse> => {
+const loginUser = async (username: string, password: string) => {
    try {
       const requestOptions = {
          body: JSON.stringify({ username: username.toLowerCase(), password }),
@@ -21,7 +9,9 @@ const loginUser = async (username: string, password: string): Promise<SuccessRes
          method: 'POST',
       };
       const response = await fetch('/api/users/login', requestOptions);
-      return response.json() as Promise<SuccessResponse | ErrorResponse>;
+      return response.json() as Promise<
+         SuccessResponse<{ id: string; refreshToken: string; accessToken: string }> | ErrorResponse
+      >;
    } catch (err) {
       return {
          status: 400,

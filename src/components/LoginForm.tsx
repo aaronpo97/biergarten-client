@@ -28,7 +28,7 @@ const LoginForm: FunctionComponent<{}> = () => {
       const { username, password } = data;
       const response = await loginUser(username, password);
 
-      if (response.status === 200) {
+      if ('payload' in response) {
          const { accessToken, id, refreshToken } = response.payload;
          localStorage.setItem('accessToken', accessToken);
          localStorage.setItem('userId', id);
@@ -47,6 +47,7 @@ const LoginForm: FunctionComponent<{}> = () => {
                placeholder='username'
                formRegister={register('username', { required: true })}
                error={errors.username}
+               type='text'
             />
          </div>
          <div className='mb-6'>
@@ -54,7 +55,7 @@ const LoginForm: FunctionComponent<{}> = () => {
                placeholder='password'
                formRegister={register('password', { required: true })}
                error={errors.password}
-               isPassword
+               type='password'
             />
          </div>
          {errorMessage && (

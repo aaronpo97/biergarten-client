@@ -21,7 +21,8 @@
       "react/jsx-props-no-spreading": "off",
       "no-console": "warn",
       "no-unused-vars": "warn",
-      "import/extensions": ["error", "ignorePackages", { "ts": "never", "tsx": "never" }]
+      "import/extensions": ["error", "ignorePackages", { "ts": "never", "tsx": "never" }],
+      "arrow-body-style": "warn"
    },
    "settings": {
       "import/resolver": {

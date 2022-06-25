@@ -10,7 +10,7 @@ const LoginPage: FunctionComponent = () => {
    const { currentUser } = useContext(AuthContext) as AuthContextValue;
 
    useEffect(() => {
-      if (currentUser.id) {
+      if (currentUser?.id) {
          navigate('/beers');
       }
    }, []);

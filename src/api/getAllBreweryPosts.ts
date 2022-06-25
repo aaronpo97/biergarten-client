@@ -1,5 +1,5 @@
 import BreweryPostI from '../types/BreweryPostI';
-import authHeaders from './authHeaders';
+import authHeaders from './utils/authHeaders';
 
 interface SuccessResponse {
    message: string;

@@ -1,8 +1,8 @@
 import BeerPostI from '../types/BeerPostI';
 import isValidUuid from '../util/isValidUuid';
-import authHeaders from './authHeaders';
-import ErrorResponse from './utils/ErrorResponse';
-import SuccessResponse from './utils/SuccessResponse';
+import authHeaders from './utils/authHeaders';
+import ErrorResponse from './utils/response/ErrorResponse';
+import SuccessResponse from './utils/response/SuccessResponse';
 
 const getBeerPostById = async (id: string) => {
    if (!isValidUuid(id)) {
