@@ -30,6 +30,7 @@ const LoginForm: FunctionComponent<{}> = () => {
 
       if ('payload' in response) {
          const { accessToken, id, refreshToken } = response.payload;
+
          localStorage.setItem('accessToken', accessToken);
          localStorage.setItem('userId', id);
          localStorage.setItem('refreshToken', refreshToken);

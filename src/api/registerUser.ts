@@ -1,6 +1,6 @@
 import formatISO from 'date-fns/formatISO';
 import saveTokens from './utils/saveTokens';
-import postRequestHeaders from './utils/requestHeaders/postRequestHeaders';
+import getPostRequestHeaders from './utils/requestHeaders/postRequestHeaders';
 import SuccessResponse from './utils/response/SuccessResponse';
 
 interface RegisterUserPayload {
@@ -8,7 +8,12 @@ interface RegisterUserPayload {
    accessToken: string;
    refreshToken: string;
 }
-const registerUser = async (username: string, email: string, birthday: string, password: string) => {
+const registerUser = async (
+   username: string,
+   email: string,
+   birthday: string,
+   password: string,
+) => {
    const user = {
       username,
       email,
@@ -17,7 +22,7 @@ const registerUser = async (username: string, email: string, birthday: string, p
    };
 
    const method = 'POST';
-   const headers = postRequestHeaders;
+   const headers = getPostRequestHeaders();
    const body = JSON.stringify(user);
 
    const response = await fetch('/api/users/register', {

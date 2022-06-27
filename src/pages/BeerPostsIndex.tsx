@@ -20,10 +20,20 @@ const BeerPostsIndex: FunctionComponent<BeerPostsIndexProps> = () => {
    }, [pageNum]);
 
    return (
-      <section className='xl:container xl:mx-auto px-100'>
-         {!!beerPosts.length &&
-            beerPosts.map((beerPost) => <BeerCard beerPost={beerPost} key={beerPost.id} />)}
-      </section>
+      <div>
+         <div className='h-[50vh] bg-gray-900 flex items-center justify-center flex-col'>
+            <h1 className='font-semibold font-serif text-7xl text-white py-6'>
+               Beers
+            </h1>
+         </div>
+
+         <div className='xl:container xl:mx-auto mt-16'>
+            {!!beerPosts.length &&
+               beerPosts.map((beerPost) => (
+                  <BeerCard beerPost={beerPost} key={beerPost.id} />
+               ))}
+         </div>
+      </div>
    );
 };
 
