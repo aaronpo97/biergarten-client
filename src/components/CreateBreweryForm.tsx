@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import createBreweryPost from '../api/createBreweryPost';
 import FormButton from './ui/FormButton';
 import FormTextInput from './ui/FormTextInput';
@@ -17,14 +18,19 @@ const CreateBreweryForm: FunctionComponent<{}> = () => {
       formState: { errors },
    } = useForm<IFormInput>();
 
+   const navigate = useNavigate();
+
    const onSubmit: SubmitHandler<IFormInput> = (data) => {
       const { name, description, location, phoneNumber } = data;
 
-      createBreweryPost(name, description, location, phoneNumber).then(
-         (response) => {
-            console.log(response);
-         },
-      );
+      createBreweryPost(name, description, location, phoneNumber)
+         .then((response) => {
+            const { id } = response.payload;
+            navigate(`/breweries/${id}`);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    };
    return (
       <form onSubmit={handleSubmit(onSubmit)}>

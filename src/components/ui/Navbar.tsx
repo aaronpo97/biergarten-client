@@ -1,5 +1,5 @@
+import { matchRoutes, useLocation, Link, useNavigate } from 'react-router-dom';
 import { FunctionComponent, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import AuthContext, { AuthContextValue } from '../../contexts/AuthContext';
 import NavbarEntry from './NavbarEntry';
 import NavButton from './NavButton';
@@ -38,7 +38,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
             </Link>
 
             <div className='hidden w-full md:block md:w-auto' id='mobile-menu'>
-               <ul className='flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium'>
+               <ul className='flex flex-col mt-4 md:flex-row md:mt-0 md:text-sm md:font-medium'>
                   {pages.map((page) => (
                      <NavbarEntry page={page} key={page.path} />
                   ))}

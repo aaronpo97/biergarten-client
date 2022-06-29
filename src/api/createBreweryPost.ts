@@ -15,12 +15,12 @@ const createBreweryPost = async (
       phoneNumber,
    });
 
-   const response = await fetch('http://localhost:8080/api/breweries', {
+   const response = await fetch('/api/breweries', {
       method: 'POST',
       headers: getPostRequestHeaders(),
       body,
    });
 
-   return response.json() as Promise<SuccessResponse<BreweryPostI>>;
+   return response.json() as Promise<SuccessResponse<{ id: string }>>;
 };
 export default createBreweryPost;

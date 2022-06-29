@@ -1,4 +1,5 @@
 import { FunctionComponent, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import getAllBeerPosts from '../api/getAllBeerPosts';
 import BeerCard from '../components/BeerCard';
 import BeerPostI from '../types/BeerPostI';

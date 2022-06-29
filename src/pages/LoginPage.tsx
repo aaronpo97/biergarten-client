@@ -17,11 +17,9 @@ const LoginPage: FunctionComponent = () => {
 
    return (
       <section className='h-screen'>
-         <div className='flex justify-center items-center flex-wrap h-full g-6 text-gray-800'>
-            <div className='md:w-8/12 lg:w-6/12 mb-12 md:mb-0'>
-               <img src='' className='w-full' alt='phone' />
-            </div>
+         <div className='flex justify-center mt-48 h-full text-gray-800'>
             <div className='md:w-8/12 lg:w-5/12 lg:ml-20'>
+               <h1 className='text-4xl text-center p-5 font-bold'>Login</h1>
                <LoginForm />
             </div>
          </div>

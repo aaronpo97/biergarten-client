@@ -2,15 +2,20 @@ import { intervalToDuration, isValid } from 'date-fns';
 import { FunctionComponent, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import registerUser from '../api/registerUser';
+import FormError from './ui/FormError';
 
 import FormButton from './ui/FormButton';
+import FormLabel from './ui/FormLabel';
 import FormTextInput from './ui/FormTextInput';
+import validateDateOfBirth from '../util/validateDateOfBirth';
 
 export interface IRegisterFormInput {
    username: string;
    password: string;
    email: string;
    dateOfBirth: string;
+   firstName: string;
+   lastName: string;
 }
 
 const RegisterForm: FunctionComponent<{}> = () => {
@@ -24,7 +29,12 @@ const RegisterForm: FunctionComponent<{}> = () => {
 
    const onSubmit: SubmitHandler<IRegisterFormInput> = async (data) => {
       const { username, email, dateOfBirth, password } = data;
-      const registerResponse = await registerUser(username, email, dateOfBirth, password);
+      const registerResponse = await registerUser(
+         username,
+         email,
+         dateOfBirth,
+         password,
+      );
 
       if (!registerResponse.success) {
          setErrorMessage(registerResponse.message);
@@ -33,72 +43,116 @@ const RegisterForm: FunctionComponent<{}> = () => {
 
    const emailRegex = /[a-z0-9]+@[a-z]+.[a-z]{2,3}/;
    return (
-      <>
-         <h1 className='font-medium text-center text-4xl'>Register User</h1>
-         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <div className='mb-6'>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+         <div className='mb-3 flex flex-wrap'>
+            <div className='w-1/2 pr-3 mb-3 md:mb-0'>
+               <FormLabel htmlFor='username'>First name</FormLabel>
                <FormTextInput
-                  placeholder='username'
-                  formRegister={register('username', { required: true, min: 2 })}
-                  error={errors.username}
-                  type='text'
-               />
-            </div>
-            <div className='mb-6'>
-               <FormTextInput
-                  placeholder='password'
-                  formRegister={register('password', { required: true, min: 8, max: 32 })}
-                  error={errors.password}
-                  type='password'
-               />
-            </div>
-            <div className='mb-6'>
-               <FormTextInput
-                  placeholder='email'
-                  formRegister={register('email', {
-                     required: true,
-                     pattern: emailRegex,
-                  })}
-                  error={errors.email}
-                  type='email'
-               />
-            </div>
-            <div className='mb-6'>
-               <FormTextInput
-                  placeholder='date of birth'
-                  formRegister={register('dateOfBirth', {
-                     required: true,
-                     validate: (dateOfBirth) => {
-                        const birthday = new Date(Date.parse(dateOfBirth));
-                        const isValidDate = isValid(birthday);
-
-                        if (!isValidDate) {
-                           return false;
-                        }
-
-                        const age = intervalToDuration({ start: birthday, end: Date.now() });
-
-                        const ageInYears = age.years;
-
-                        if (!ageInYears || ageInYears < 19) {
-                           return false;
-                        }
-                        return true;
+                  placeholder='Jane'
+                  formRegister={register('firstName', {
+                     required: 'First name is required.',
+                     minLength: {
+                        value: 2,
+                        message:
+                           'First name must be greater than two characters. ',
                      },
                   })}
-                  error={errors.dateOfBirth}
-                  type='date'
+                  error={errors.firstName}
+                  type='text'
+                  id='firstName'
                />
+
+               <FormError>{errors.firstName?.message}</FormError>
             </div>
-            {/* {errors.dateOfBirth?.type === 'required' && 'Date of birth is required.'} */}
-            {errorMessage && (
-               <div>
-                  <p>{errorMessage}</p>
-               </div>
-            )}
-            <FormButton text='Login' />
-         </form>
-      </>
+            <div className=' w-1/2 pl-3 mb-3 md:mb-0'>
+               <FormLabel htmlFor='username'>Last name</FormLabel>
+               <FormTextInput
+                  placeholder='Doe'
+                  formRegister={register('lastName', {
+                     required: 'Last name is required.',
+                     minLength: {
+                        value: 2,
+                        message:
+                           'Last name must be greater than two characters. ',
+                     },
+                  })}
+                  error={errors.lastName}
+                  type='text'
+                  id='lastName'
+               />
+               <FormError>{errors.lastName?.message}</FormError>
+            </div>
+         </div>
+         <div className='mb-3'>
+            <FormLabel htmlFor='username'>Username</FormLabel>
+            <FormTextInput
+               placeholder='jane.doe'
+               formRegister={register('username', {
+                  required: 'Username is required.',
+                  minLength: {
+                     value: 2,
+                     message: 'Username must be greater than two characters.',
+                  },
+               })}
+               error={errors.username}
+               type='text'
+               id='username'
+            />
+            <FormError>{errors.username?.message}</FormError>
+         </div>
+         <div className='mb-3'>
+            <FormLabel htmlFor='email'>Email</FormLabel>
+            <FormTextInput
+               id='email'
+               placeholder='jane.doe@example.com'
+               formRegister={register('email', {
+                  required: 'Email is required.',
+                  pattern: { message: 'Email is invalid.', value: emailRegex },
+               })}
+               error={errors.email}
+               type='email'
+            />
+            <FormError>{errors.email?.message}</FormError>
+         </div>
+         <div className='mb-3'>
+            <FormLabel htmlFor='password'>Password</FormLabel>
+            <FormTextInput
+               id='password'
+               placeholder='password'
+               formRegister={register('password', {
+                  required: 'Password is required.',
+                  minLength: {
+                     value: 8,
+                     message: 'Password must be eight or more characters.',
+                  },
+               })}
+               error={errors.password}
+               type='password'
+            />
+            <FormError>{errors.password?.message}</FormError>
+         </div>
+
+         <div className='mb-8'>
+            <FormLabel htmlFor='date-of-birth'>Date of birth</FormLabel>
+            <FormTextInput
+               id='date-of-birth'
+               formRegister={register('dateOfBirth', {
+                  required: 'Date of birth is required.',
+                  validate: (dateOfBirth) =>
+                     validateDateOfBirth(
+                        new Date(Date.parse(dateOfBirth)),
+                        19,
+                     ) || 'You are not old enough to use this application.',
+               })}
+               error={errors.dateOfBirth}
+               type='date'
+            />
+            <FormError>{errors.dateOfBirth?.message}</FormError>
+         </div>
+         <div>
+            <FormButton>Register</FormButton>
+         </div>
+      </form>
    );
 };
 
