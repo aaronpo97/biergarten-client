@@ -10,7 +10,7 @@ const FormLabel: FunctionComponent<FormLabelProps> = ({
    children,
 }) => (
    <label
-      className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-1'
+      className='block uppercase tracking-wide text-gray-700 text-sm sm:text-xs font-extrabold my-1'
       htmlFor={htmlFor}
    >
       {children}

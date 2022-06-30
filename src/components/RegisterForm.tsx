@@ -1,4 +1,3 @@
-import { intervalToDuration, isValid } from 'date-fns';
 import { FunctionComponent, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import registerUser from '../api/registerUser';
@@ -8,6 +7,11 @@ import FormButton from './ui/FormButton';
 import FormLabel from './ui/FormLabel';
 import FormTextInput from './ui/FormTextInput';
 import validateDateOfBirth from '../util/validateDateOfBirth';
+import checkIfUsernameExists from '../api/checkIfUsernameExists';
+import { useNavigate } from 'react-router-dom';
+import checkIfEmailExists from '../api/checkIfEmailExists';
+import FormSegment from './ui/FormSegment';
+import FormInfo from './ui/FormInfo';
 
 export interface IRegisterFormInput {
    username: string;
@@ -25,28 +29,40 @@ const RegisterForm: FunctionComponent<{}> = () => {
       formState: { errors },
    } = useForm<IRegisterFormInput>();
 
-   const [errorMessage, setErrorMessage] = useState<null | string>(null);
+   const [serverResponseErrors, setServerResponseErrors] = useState<{
+      username?: string;
+      email?: string;
+   }>({});
+
+   const navigate = useNavigate();
 
    const onSubmit: SubmitHandler<IRegisterFormInput> = async (data) => {
-      const { username, email, dateOfBirth, password } = data;
+      const { username, email, dateOfBirth, password, firstName, lastName } =
+         data;
       const registerResponse = await registerUser(
          username,
          email,
          dateOfBirth,
          password,
+         firstName,
+         lastName,
       );
 
-      if (!registerResponse.success) {
-         setErrorMessage(registerResponse.message);
+      if (registerResponse.success) {
+         navigate('/beers');
       }
    };
 
    const emailRegex = /[a-z0-9]+@[a-z]+.[a-z]{2,3}/;
+
    return (
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-         <div className='mb-3 flex flex-wrap'>
-            <div className='w-1/2 pr-3 mb-3 md:mb-0'>
-               <FormLabel htmlFor='username'>First name</FormLabel>
+         <div className='md:mb-3 flex flex-wrap sm:text-xs'>
+            <div className='md:w-1/2 w-full md:pr-3 mb-3 md:mb-0'>
+               <FormInfo>
+                  <FormLabel htmlFor='username'>First name</FormLabel>
+                  <FormError>{errors.firstName?.message}</FormError>
+               </FormInfo>
                <FormTextInput
                   placeholder='Jane'
                   formRegister={register('firstName', {
@@ -56,16 +72,20 @@ const RegisterForm: FunctionComponent<{}> = () => {
                         message:
                            'First name must be greater than two characters. ',
                      },
+                     validate: (firstName) =>
+                        RegExp('[^0-9!@#$%^&*(),]+').test(firstName) ||
+                        'First name is invalid.',
                   })}
-                  error={errors.firstName}
+                  error={!!errors.firstName}
                   type='text'
                   id='firstName'
                />
-
-               <FormError>{errors.firstName?.message}</FormError>
             </div>
-            <div className=' w-1/2 pl-3 mb-3 md:mb-0'>
-               <FormLabel htmlFor='username'>Last name</FormLabel>
+            <div className='md:w-1/2 w-full md:pl-3 mb-3 md:mb-0'>
+               <FormInfo>
+                  <FormLabel htmlFor='username'>Last name</FormLabel>
+                  <FormError>{errors.lastName?.message}</FormError>
+               </FormInfo>
                <FormTextInput
                   placeholder='Doe'
                   formRegister={register('lastName', {
@@ -75,16 +95,23 @@ const RegisterForm: FunctionComponent<{}> = () => {
                         message:
                            'Last name must be greater than two characters. ',
                      },
+                     validate: (lastName) =>
+                        RegExp('[^0-9!@#$%^&*(),]+').test(lastName) ||
+                        'Last name is invalid.',
                   })}
-                  error={errors.lastName}
+                  error={!!errors.lastName}
                   type='text'
                   id='lastName'
                />
-               <FormError>{errors.lastName?.message}</FormError>
             </div>
          </div>
-         <div className='mb-3'>
-            <FormLabel htmlFor='username'>Username</FormLabel>
+         <FormSegment>
+            <FormInfo>
+               <FormLabel htmlFor='username'>Username</FormLabel>
+               <FormError>
+                  {errors.username?.message || serverResponseErrors.username}
+               </FormError>
+            </FormInfo>
             <FormTextInput
                placeholder='jane.doe'
                formRegister={register('username', {
@@ -93,29 +120,48 @@ const RegisterForm: FunctionComponent<{}> = () => {
                      value: 2,
                      message: 'Username must be greater than two characters.',
                   },
+                  validate: async (username) => {
+                     const response = await checkIfUsernameExists(username);
+                     const isValid =
+                        'payload' in response &&
+                        !response.payload.usernameTaken;
+
+                     return isValid || response.message;
+                  },
                })}
-               error={errors.username}
+               error={!!errors.username || !!serverResponseErrors.username}
                type='text'
                id='username'
             />
-            <FormError>{errors.username?.message}</FormError>
-         </div>
-         <div className='mb-3'>
-            <FormLabel htmlFor='email'>Email</FormLabel>
+         </FormSegment>
+         <FormSegment>
+            <FormInfo>
+               <FormLabel htmlFor='email'>Email</FormLabel>
+               <FormError>{errors.email?.message}</FormError>
+            </FormInfo>
             <FormTextInput
                id='email'
                placeholder='jane.doe@example.com'
                formRegister={register('email', {
                   required: 'Email is required.',
                   pattern: { message: 'Email is invalid.', value: emailRegex },
+                  validate: async (email) => {
+                     const response = await checkIfEmailExists(email);
+                     const isValid =
+                        'payload' in response && !response.payload.emailTaken;
+
+                     return isValid || response.message;
+                  },
                })}
-               error={errors.email}
+               error={!!errors.email}
                type='email'
             />
-            <FormError>{errors.email?.message}</FormError>
-         </div>
-         <div className='mb-3'>
-            <FormLabel htmlFor='password'>Password</FormLabel>
+         </FormSegment>
+         <FormSegment>
+            <FormInfo>
+               <FormLabel htmlFor='password'>Password</FormLabel>
+               <FormError>{errors.password?.message}</FormError>
+            </FormInfo>
             <FormTextInput
                id='password'
                placeholder='password'
@@ -126,14 +172,16 @@ const RegisterForm: FunctionComponent<{}> = () => {
                      message: 'Password must be eight or more characters.',
                   },
                })}
-               error={errors.password}
+               error={!!errors.password}
                type='password'
             />
-            <FormError>{errors.password?.message}</FormError>
-         </div>
+         </FormSegment>
 
-         <div className='mb-8'>
-            <FormLabel htmlFor='date-of-birth'>Date of birth</FormLabel>
+         <FormSegment>
+            <FormInfo>
+               <FormLabel htmlFor='date-of-birth'>Date of birth</FormLabel>
+               <FormError>{errors.dateOfBirth?.message}</FormError>
+            </FormInfo>
             <FormTextInput
                id='date-of-birth'
                formRegister={register('dateOfBirth', {
@@ -144,12 +192,11 @@ const RegisterForm: FunctionComponent<{}> = () => {
                         19,
                      ) || 'You are not old enough to use this application.',
                })}
-               error={errors.dateOfBirth}
+               error={!!errors.dateOfBirth}
                type='date'
             />
-            <FormError>{errors.dateOfBirth?.message}</FormError>
-         </div>
-         <div>
+         </FormSegment>
+         <div className='mt-8'>
             <FormButton>Register</FormButton>
          </div>
       </form>

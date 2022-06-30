@@ -5,7 +5,11 @@ import loginUser from '../api/loginUser';
 import AuthContext, { AuthContextValue } from '../contexts/AuthContext';
 
 import FormButton from './ui/FormButton';
+import FormSegment from './ui/FormSegment';
+import FormLabel from './ui/FormLabel';
 import FormTextInput from './ui/FormTextInput';
+import FormInfo from './ui/FormInfo';
+import FormError from './ui/FormError';
 
 interface IFormInput {
    username: string;
@@ -43,28 +47,47 @@ const LoginForm: FunctionComponent<{}> = () => {
    };
    return (
       <form onSubmit={handleSubmit(onSubmit)}>
-         <div className='mb-6'>
+         <FormInfo>
+            <FormLabel htmlFor='username'>Username</FormLabel>
+            <FormError>
+               {errors.username?.message ||
+                  (errorMessage as string | undefined)}
+            </FormError>
+         </FormInfo>
+         <FormSegment>
             <FormTextInput
                placeholder='username'
-               formRegister={register('username', { required: true })}
-               error={errors.username}
+               formRegister={register('username', {
+                  required: 'Username is required.',
+               })}
+               error={!!errors.username}
                type='text'
+               id='username'
             />
-         </div>
-         <div className='mb-6'>
+         </FormSegment>
+         <FormSegment>
+            <FormInfo>
+               <FormLabel htmlFor='password'>Password</FormLabel>
+               <FormError>
+                  {errors.password?.message ||
+                     (errorMessage as string | undefined)}
+               </FormError>
+            </FormInfo>
             <FormTextInput
                placeholder='password'
-               formRegister={register('password', { required: true })}
-               error={errors.password}
+               formRegister={register('password', {
+                  required: 'Password is required.',
+                  minLength: {
+                     value: 8,
+                     message: 'Password must be eight or more characters.',
+                  },
+               })}
+               error={!!errors.password}
                type='password'
+               id='password'
             />
-         </div>
-         {errorMessage && (
-            <div>
-               <p>{errorMessage}</p>
-            </div>
-         )}
-         <FormButton text='Login' />
+         </FormSegment>
+         <FormButton>Login</FormButton>
       </form>
    );
 };

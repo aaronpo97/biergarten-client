@@ -38,36 +38,40 @@ const CreateBreweryForm: FunctionComponent<{}> = () => {
             <FormTextInput
                placeholder='name'
                formRegister={register('name', { required: true })}
-               error={errors.name}
+               error={!!errors.name}
                type='text'
+               id='name'
             />
          </div>
          <div className='mb-6'>
             <FormTextInput
                placeholder='location'
                formRegister={register('location', { required: true })}
-               error={errors.location}
+               error={!!errors.location}
                type='text'
+               id='location'
             />
          </div>
          <div className='mb-6'>
             <FormTextInput
                placeholder='description'
                formRegister={register('description', { required: true })}
-               error={errors.description}
+               error={!!errors.description}
                type='text'
+               id='description'
             />
          </div>
          <div className='mb-6'>
             <FormTextInput
                placeholder='phone number'
                formRegister={register('phoneNumber', { required: true })}
-               error={errors.phoneNumber}
+               error={!!errors.phoneNumber}
                type='text'
+               id='phone-number'
             />
          </div>
 
-         <FormButton text='Submit Brewery' />
+         <FormButton>Submit Brewery</FormButton>
       </form>
    );
 };
