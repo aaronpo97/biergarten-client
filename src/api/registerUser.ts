@@ -42,7 +42,7 @@ const registerUser = async (
 
    if ('payload' in data) {
       const { accessToken, user: registeredUser, refreshToken } = data.payload;
-      saveTokens(accessToken, refreshToken, registeredUser.id);
+      saveTokens({ accessToken, refreshToken, userId: registeredUser.id });
    }
 
    return data;

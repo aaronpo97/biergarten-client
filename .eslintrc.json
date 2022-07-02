@@ -26,11 +26,14 @@
       "react/jsx-props-no-spreading": "off",
       "no-console": "warn",
       "no-unused-vars": "warn",
+
       "import/extensions": [
-         "error",
+         "off",
          "ignorePackages",
          { "ts": "never", "tsx": "never" }
       ],
+
+      "import/no-unresolved": ["off"],
       "arrow-body-style": "warn",
 
       "jsx-a11y/label-has-associated-control": [
@@ -48,11 +51,6 @@
                "some": ["nesting", "id"]
             }
          }
-      ],
-      "settings": {
-         "import/resolver": {
-            "typescript": {}
-         }
-      }
+      ]
    }
 }

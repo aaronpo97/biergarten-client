@@ -1,5 +1,6 @@
 import ErrorResponse from './utils/response/ErrorResponse';
 import SuccessResponse from './utils/response/SuccessResponse';
+import saveTokens from './utils/saveTokens';
 
 const loginUser = async (username: string, password: string) => {
    try {
@@ -9,9 +10,19 @@ const loginUser = async (username: string, password: string) => {
          method: 'POST',
       };
       const response = await fetch('/api/users/login', requestOptions);
-      return response.json() as Promise<
-         SuccessResponse<{ id: string; refreshToken: string; accessToken: string }> | ErrorResponse
-      >;
+      const data = (await response.json()) as
+         | SuccessResponse<{
+              id: string;
+              refreshToken: string;
+              accessToken: string;
+           }>
+         | ErrorResponse;
+
+      if ('payload' in data) {
+         const { accessToken, refreshToken, id } = data.payload;
+         saveTokens({ accessToken, refreshToken, userId: id });
+      }
+      return data;
    } catch (err) {
       return {
          status: 400,
