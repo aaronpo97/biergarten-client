@@ -1,6 +1,6 @@
-import { matchRoutes, useLocation, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FunctionComponent, useContext } from 'react';
-import AuthContext, { AuthContextValue } from '../../contexts/AuthContext';
+import AuthContext, { AuthContextValue } from '../../../contexts/AuthContext';
 import NavbarEntry from './NavbarEntry';
 import NavButton from './NavButton';
 
@@ -50,7 +50,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
                            localStorage.clear();
 
                            navigate('/');
-                           setCurrentUser({ id: '', username: '' });
+                           setCurrentUser({ id: null, username: null });
                         }}
                      />
                   )}

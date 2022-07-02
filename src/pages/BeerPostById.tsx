@@ -20,9 +20,17 @@ const BeerPostById: FunctionComponent<BeerPostByIdProps> = () => {
             setBeerPost(response.payload);
          }
       });
-   });
+   }, []);
 
-   return <div>{beerPost ? <BeerDetailsCard beerPost={beerPost} /> : <div>Loading</div>}</div>;
+   return (
+      <div>
+         {beerPost ? (
+            <BeerDetailsCard beerPost={beerPost} />
+         ) : (
+            <div>Loading</div>
+         )}
+      </div>
+   );
 };
 
 export default BeerPostById;

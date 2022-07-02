@@ -22,13 +22,14 @@ const BeerPostsIndex: FunctionComponent<BeerPostsIndexProps> = () => {
 
    return (
       <div>
-         <div className='h-[50vh] bg-gray-900 flex items-center justify-center flex-col'>
-            <h1 className='font-semibold font-serif text-7xl text-white py-6'>
-               Beers
-            </h1>
-         </div>
+         <header className='h-96 bg-gray-900 flex items-center justify-center flex-col'>
+            <h1 className='font-semibold text-7xl text-white py-6'>Beers</h1>
+         </header>
 
          <div className='xl:container xl:mx-auto mt-16'>
+            <Link to='/beers/create' className='mb-10 text-3xl'>
+               Post a beer
+            </Link>
             {!!beerPosts.length &&
                beerPosts.map((beerPost) => (
                   <BeerCard beerPost={beerPost} key={beerPost.id} />

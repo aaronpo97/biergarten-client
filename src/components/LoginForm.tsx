@@ -3,13 +3,12 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import loginUser from '../api/loginUser';
 import AuthContext, { AuthContextValue } from '../contexts/AuthContext';
-
-import FormButton from './ui/FormButton';
-import FormSegment from './ui/FormSegment';
-import FormLabel from './ui/FormLabel';
-import FormTextInput from './ui/FormTextInput';
-import FormInfo from './ui/FormInfo';
-import FormError from './ui/FormError';
+import FormButton from './ui/forms/FormButton';
+import FormError from './ui/forms/FormError';
+import FormInfo from './ui/forms/FormInfo';
+import FormLabel from './ui/forms/FormLabel';
+import FormSegment from './ui/forms/FormSegment';
+import FormTextInput from './ui/forms/FormTextInput';
 
 interface IFormInput {
    username: string;
@@ -33,11 +32,8 @@ const LoginForm: FunctionComponent<{}> = () => {
       const response = await loginUser(username, password);
 
       if ('payload' in response) {
-         const { accessToken, id, refreshToken } = response.payload;
+         const { id } = response.payload;
 
-         localStorage.setItem('accessToken', accessToken);
-         localStorage.setItem('userId', id);
-         localStorage.setItem('refreshToken', refreshToken);
          setCurrentUser({ username, id });
          navigate('/beers');
       }
@@ -65,14 +61,14 @@ const LoginForm: FunctionComponent<{}> = () => {
                id='username'
             />
          </FormSegment>
+         <FormInfo>
+            <FormLabel htmlFor='password'>Password</FormLabel>
+            <FormError>
+               {errors.password?.message ||
+                  (errorMessage as string | undefined)}
+            </FormError>
+         </FormInfo>
          <FormSegment>
-            <FormInfo>
-               <FormLabel htmlFor='password'>Password</FormLabel>
-               <FormError>
-                  {errors.password?.message ||
-                     (errorMessage as string | undefined)}
-               </FormError>
-            </FormInfo>
             <FormTextInput
                placeholder='password'
                formRegister={register('password', {

@@ -8,4 +8,9 @@ export default interface BreweryPostI {
    createdAt: string;
    modifiedAt: string | null;
    beers: BeerPostI[];
+   phoneNumber: string;
+   postedBy?: {
+      id: string;
+      username: string;
+   };
 }

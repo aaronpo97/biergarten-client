@@ -1,8 +1,8 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 
 /** A container for both the form error and form label. */
 interface FormInfoProps {
-   children: Array<JSX.Element> | JSX.Element;
+   children: Array<ReactNode> | ReactNode;
 }
 
 const FormInfo: FunctionComponent<FormInfoProps> = ({ children }) => (

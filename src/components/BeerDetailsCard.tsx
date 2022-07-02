@@ -24,19 +24,30 @@ const BeerDetailsCard: FunctionComponent<BeerCardProps> = ({ beerPost }) => {
             />
             <div className='p-6 flex flex-col'>
                <div>
-                  <h2 className='text-gray-900 text-5xl font-bold mb-2'>{beerPost.name}</h2>
+                  <h2 className='text-gray-900 text-5xl font-bold mb-2'>
+                     {beerPost.name}
+                  </h2>
                   <h3 className='text-gray-900 text-3xl font-medium mb-2'>
-                     by <Link to={`/breweries/${beerPost.brewery.id}`}>{beerPost.brewery.name}</Link>
+                     by{' '}
+                     <Link to={`/breweries/${beerPost.brewery.id}`}>
+                        {beerPost.brewery.name}
+                     </Link>
                   </h3>
                </div>
 
                <div>
-                  <p className='text-gray-900 text-md-my-2'>{beerPost.description}</p>
+                  <p className='text-gray-900 text-md-my-2'>
+                     {beerPost.description}
+                  </p>
                </div>
 
                <div>
-                  <p className='text-gray-900 mt-3 text-md'>{beerPost.abv}% ABV</p>
-                  <p className='text-gray-900 mb-3 text-md'>{beerPost.ibu} IBU</p>
+                  <p className='text-gray-900 mt-3 text-md'>
+                     {beerPost.abv}% ABV
+                  </p>
+                  <p className='text-gray-900 mb-3 text-md'>
+                     {beerPost.ibu} IBU
+                  </p>
                </div>
                <div>
                   <p>

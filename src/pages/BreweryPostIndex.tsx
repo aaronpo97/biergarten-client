@@ -9,8 +9,8 @@ const BreweryPostIndex: FunctionComponent<BreweryPostIndexProps> = () => {
    const [breweryPosts, setBreweryPosts] = useState<BreweryPostI[]>([]);
 
    useEffect(() => {
-      getAllBreweryPosts().then((response) => {
-         if (!response.payload) {
+      getAllBreweryPosts({ paginated: true }).then((response) => {
+         if (!('payload' in response)) {
             return;
          }
          setBreweryPosts(response.payload);

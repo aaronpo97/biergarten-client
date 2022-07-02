@@ -1,8 +1,8 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
 export interface CurrentUserState {
-   username: string;
-   id: string;
+   username: string | null;
+   id: string | null;
 }
 
 export interface AuthContextValue {

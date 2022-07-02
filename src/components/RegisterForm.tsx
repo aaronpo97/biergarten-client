@@ -1,17 +1,16 @@
 import { FunctionComponent, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import registerUser from '../api/registerUser';
-import FormError from './ui/FormError';
-
-import FormButton from './ui/FormButton';
-import FormLabel from './ui/FormLabel';
-import FormTextInput from './ui/FormTextInput';
-import validateDateOfBirth from '../util/validateDateOfBirth';
-import checkIfUsernameExists from '../api/checkIfUsernameExists';
 import { useNavigate } from 'react-router-dom';
 import checkIfEmailExists from '../api/checkIfEmailExists';
-import FormSegment from './ui/FormSegment';
-import FormInfo from './ui/FormInfo';
+import checkIfUsernameExists from '../api/checkIfUsernameExists';
+import registerUser from '../api/registerUser';
+import validateDateOfBirth from '../util/validateDateOfBirth';
+import FormButton from './ui/forms/FormButton';
+import FormError from './ui/forms/FormError';
+import FormInfo from './ui/forms/FormInfo';
+import FormLabel from './ui/forms/FormLabel';
+import FormSegment from './ui/forms/FormSegment';
+import FormTextInput from './ui/forms/FormTextInput';
 
 export interface IRegisterFormInput {
    username: string;
@@ -73,7 +72,7 @@ const RegisterForm: FunctionComponent<{}> = () => {
                            'First name must be greater than two characters. ',
                      },
                      validate: (firstName) =>
-                        RegExp('[^0-9!@#$%^&*(),]+').test(firstName) ||
+                        /[^0-9!@#$%^&*(),]+/.test(firstName) ||
                         'First name is invalid.',
                   })}
                   error={!!errors.firstName}
@@ -96,7 +95,7 @@ const RegisterForm: FunctionComponent<{}> = () => {
                            'Last name must be greater than two characters. ',
                      },
                      validate: (lastName) =>
-                        RegExp('[^0-9!@#$%^&*(),]+').test(lastName) ||
+                        /[^0-9!@#$%^&*(),]+/.test(lastName) ||
                         'Last name is invalid.',
                   })}
                   error={!!errors.lastName}
@@ -196,9 +195,8 @@ const RegisterForm: FunctionComponent<{}> = () => {
                type='date'
             />
          </FormSegment>
-         <div className='mt-8'>
-            <FormButton>Register</FormButton>
-         </div>
+
+         <FormButton>Register</FormButton>
       </form>
    );
 };
