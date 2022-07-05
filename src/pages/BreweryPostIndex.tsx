@@ -1,6 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import getAllBreweryPosts from '../api/getAllBreweryPosts';
+import PageHeader from '../components/ui/pageHeader/HeaderBody';
+import HeaderTitle from '../components/ui/pageHeader/HeaderTitle';
+
 import BreweryPostI from '../types/BreweryPostI';
 
 interface BreweryPostIndexProps {}
@@ -19,11 +22,10 @@ const BreweryPostIndex: FunctionComponent<BreweryPostIndexProps> = () => {
 
    return (
       <section>
-         <div className='h-[50vh] bg-gray-900 flex items-center justify-center flex-col'>
-            <h1 className='font-semibold font-serif text-7xl text-white py-6'>
-               Breweries
-            </h1>
-         </div>
+         <PageHeader>
+            <HeaderTitle>Breweries</HeaderTitle>
+         </PageHeader>
+
          <Link
             to='/breweries/create'
             className='font-semibold text-3xl  m-3 border '

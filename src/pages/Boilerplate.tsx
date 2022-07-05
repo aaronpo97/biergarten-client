@@ -26,7 +26,7 @@ const Boilerplate: FunctionComponent<{}> = () => {
    return (
       <>
          <Navbar />
-         <Outlet />;
+         <Outlet />
       </>
    );
 };

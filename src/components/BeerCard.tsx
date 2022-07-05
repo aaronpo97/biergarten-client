@@ -7,23 +7,24 @@ interface BeerCardProps {
 }
 
 const BeerCard: FunctionComponent<BeerCardProps> = ({ beerPost }) => (
-   <Link to={`/beers/${beerPost.id}`} className='flex justify-center mb-10'>
-      <div className='flex flex-col md:flex-row w-full rounded-lg bg-gray-200 shadow-lg hover:bg-gray-300'>
-         <div className='py-6 flex content-center w-5/6'>
-            <div className=''>
-               <h2 className='text-gray-900 text-5xl font-bold mb-2'>
-                  {beerPost.name}
-               </h2>
-               <h3 className='text-gray-900 text-3xl font-medium mb-2'>
-                  by {beerPost.brewery.name}
-               </h3>
-            </div>
-         </div>
+   <Link to={`/beers/${beerPost.id}`}>
+      <div className='flex flex-col h-auto rounded-lg bg-gray mb-10 shadow-lg hover:bg-gray-300'>
          <img
-            className='lg:h-300 object-cover lg:w-48 rounded-t-lg lg:rounded-none lg:rounded-l-lg'
-            src='https://www.heineken.com/media-us/01pfxdqq/heineken-original-bottle.png?quality=85'
+            className=''
+            src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Flowr.q.jpg/1280px-Flowr.q.jpg'
             alt=''
          />
+
+         <div className='p-2'>
+            <h2 className='text-gray-900 text-2xl font-bold mb-1'>
+               {beerPost.name}
+            </h2>
+            <h3 className='text-gray-900 text-lg font-medium mb-2'>
+               {beerPost.brewery.name}
+            </h3>
+
+            <p>{beerPost.abv}% ABV</p>
+         </div>
       </div>
    </Link>
 );

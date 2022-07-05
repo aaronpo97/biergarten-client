@@ -3,19 +3,27 @@ import getAuthRequestHeaders from './utils/requestHeaders/authRequestHeaders';
 import ErrorResponse from './utils/response/ErrorResponse';
 import SuccessResponse from './utils/response/SuccessResponse';
 
-interface CreateBeerPostArgs {
-   name: string;
-   description: string;
-   abv: number;
-   ibu: number;
-   breweryId: string;
-   type: string;
+interface EditBreweryPostArgs {
+   name?: string;
+   description?: string;
+   location?: string;
+   phoneNumber?: string;
 }
-const createBeerPost = async (args: CreateBeerPostArgs) => {
-   const response = await fetch('/api/beers', {
-      method: 'POST',
+const editBreweryPost = async (
+   id: string,
+   { name, description, location, phoneNumber }: EditBreweryPostArgs,
+) => {
+   const body = JSON.stringify({
+      name,
+      description,
+      location,
+      phoneNumber,
+   });
+
+   const response = await fetch(`/api/breweries/${id}`, {
+      method: 'PUT',
       headers: getAuthRequestHeaders(),
-      body: JSON.stringify(args),
+      body,
    });
 
    const data = (await response.json()) as
@@ -26,4 +34,4 @@ const createBeerPost = async (args: CreateBeerPostArgs) => {
 
    return data;
 };
-export default createBeerPost;
+export default editBreweryPost;

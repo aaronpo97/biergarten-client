@@ -4,7 +4,7 @@ import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 
 interface FormInputProps {
    placeholder?: string;
-   formRegister: UseFormRegisterReturn<string>;
+   formValidationSchema: UseFormRegisterReturn<string>;
    error: boolean;
    // eslint-disable-next-line react/require-default-props
    type: 'email' | 'password' | 'text' | 'date';
@@ -14,7 +14,7 @@ interface FormInputProps {
 
 const FormTextInput: FunctionComponent<FormInputProps> = ({
    placeholder = '',
-   formRegister,
+   formValidationSchema,
    error,
    type,
    id,
@@ -28,7 +28,7 @@ const FormTextInput: FunctionComponent<FormInputProps> = ({
             ? 'border-gray-300 focus:border-blue-600'
             : 'border-red-800 focus:border-red-800'
       }`}
-      {...formRegister}
+      {...formValidationSchema}
    />
 );
 

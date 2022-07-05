@@ -1,12 +1,8 @@
 import BreweryPostI from '../types/BreweryPostI';
+import saveNewAccessTokenIfExists from './utils/saveNewAccessTokenIfExists';
 import getAuthHeaders from './utils/requestHeaders/getAuthHeaders';
 import ErrorResponse from './utils/response/ErrorResponse';
-
-interface SuccessResponse {
-   message: string;
-   status: 200;
-   payload: BreweryPostI[];
-}
+import SuccessResponse from './utils/response/SuccessResponse';
 
 const getAllBreweryPosts = async ({
    paginated = false,
@@ -21,7 +17,13 @@ const getAllBreweryPosts = async ({
       headers: getAuthHeaders(),
    });
 
-   return response.json() as Promise<SuccessResponse | ErrorResponse>;
+   const data = (await response.json()) as
+      | SuccessResponse<BreweryPostI[]>
+      | ErrorResponse;
+
+   saveNewAccessTokenIfExists(data);
+
+   return data;
 };
 
 export default getAllBreweryPosts;

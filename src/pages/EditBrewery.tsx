@@ -47,7 +47,11 @@ const EditBrewery: FunctionComponent<EditBreweryProps> = () => {
                </div>
                <div className='mt-5'>
                   {breweryPost && (
-                     <BreweryForm type='edit' defaultValues={breweryPost} />
+                     <BreweryForm
+                        type='edit'
+                        defaultValues={breweryPost}
+                        postId={id}
+                     />
                   )}
                </div>
             </section>

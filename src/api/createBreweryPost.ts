@@ -1,4 +1,5 @@
-import getPostRequestHeaders from './utils/requestHeaders/postRequestHeaders';
+import saveNewAccessTokenIfExists from './utils/saveNewAccessTokenIfExists';
+import getAuthRequestHeaders from './utils/requestHeaders/authRequestHeaders';
 import ErrorResponse from './utils/response/ErrorResponse';
 import SuccessResponse from './utils/response/SuccessResponse';
 
@@ -23,12 +24,16 @@ const createBreweryPost = async ({
 
    const response = await fetch('/api/breweries', {
       method: 'POST',
-      headers: getPostRequestHeaders(),
+      headers: getAuthRequestHeaders(),
       body,
    });
 
-   return response.json() as Promise<
-      SuccessResponse<{ id: string }> | ErrorResponse
-   >;
+   const data = (await response.json()) as
+      | SuccessResponse<{ id: string }>
+      | ErrorResponse;
+
+   saveNewAccessTokenIfExists(data);
+
+   return data;
 };
 export default createBreweryPost;

@@ -3,7 +3,7 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 
 interface FormTextAreaProps {
    placeholder?: string;
-   formRegister: UseFormRegisterReturn<string>;
+   formValidationSchema: UseFormRegisterReturn<string>;
    error: boolean;
    id: string;
    rows: number;
@@ -11,7 +11,7 @@ interface FormTextAreaProps {
 
 const FormTextArea: FunctionComponent<FormTextAreaProps> = ({
    placeholder = '',
-   formRegister,
+   formValidationSchema,
    error,
    id,
    rows,
@@ -24,7 +24,7 @@ const FormTextArea: FunctionComponent<FormTextAreaProps> = ({
             ? 'border-gray-300 focus:border-blue-600'
             : 'border-red-500 focus:border-red-500'
       }`}
-      {...formRegister}
+      {...formValidationSchema}
       rows={rows}
    />
 );

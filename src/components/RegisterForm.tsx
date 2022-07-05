@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import checkIfEmailExists from '../api/checkIfEmailExists';
@@ -21,17 +21,10 @@ export interface IRegisterFormInput {
    lastName: string;
 }
 
-const RegisterForm: FunctionComponent<{}> = () => {
-   const {
-      register,
-      handleSubmit,
-      formState: { errors },
-   } = useForm<IRegisterFormInput>();
-
-   const [serverResponseErrors, setServerResponseErrors] = useState<{
-      username?: string;
-      email?: string;
-   }>({});
+const RegisterForm: FunctionComponent = () => {
+   const { register, handleSubmit, formState } = useForm<IRegisterFormInput>({
+      defaultValues: { dateOfBirth: '2000-01-01' },
+   });
 
    const navigate = useNavigate();
 
@@ -53,29 +46,81 @@ const RegisterForm: FunctionComponent<{}> = () => {
    };
 
    const emailRegex = /[a-z0-9]+@[a-z]+.[a-z]{2,3}/;
+   const nameRegex = /[^0-9!@#$%^&*(),]+/;
+
+   const firstNameValidationSchema = register('firstName', {
+      required: 'First name is required.',
+      minLength: {
+         value: 2,
+         message: 'First name must be greater than two characters. ',
+      },
+      validate: (firstName) =>
+         nameRegex.test(firstName) || 'First name is invalid.',
+   });
+
+   const lastNameValidationSchema = register('lastName', {
+      required: 'Last name is required.',
+      minLength: {
+         value: 2,
+         message: 'Last name must be greater than two characters. ',
+      },
+      validate: (lastName) =>
+         nameRegex.test(lastName) || 'Last name is invalid.',
+   });
+
+   const usernameValidationSchema = register('username', {
+      required: 'Username is required.',
+      minLength: {
+         value: 2,
+         message: 'Username must be greater than two characters.',
+      },
+      validate: async (username) => {
+         const response = await checkIfUsernameExists(username);
+         const isValid =
+            'payload' in response && !response.payload.usernameTaken;
+
+         return isValid || response.message;
+      },
+   });
+
+   const emailValidationSchema = register('email', {
+      required: 'Email is required.',
+      pattern: { message: 'Email is invalid.', value: emailRegex },
+      validate: async (email) => {
+         const response = await checkIfEmailExists(email);
+         const isValid = 'payload' in response && !response.payload.emailTaken;
+
+         return isValid || response.message;
+      },
+   });
+
+   const passwordValidationSchema = register('password', {
+      required: 'Password is required.',
+      minLength: {
+         value: 8,
+         message: 'Password must be eight or more characters.',
+      },
+   });
+
+   const dateOfBirthValidationSchema = register('dateOfBirth', {
+      required: 'Date of birth is required.',
+      validate: (dateOfBirth) =>
+         validateDateOfBirth(new Date(Date.parse(dateOfBirth)), 19) ||
+         'You are not old enough to use this application.',
+   });
 
    return (
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
          <div className='md:mb-3 flex flex-wrap sm:text-xs'>
             <div className='md:w-1/2 w-full md:pr-3 mb-3 md:mb-0'>
                <FormInfo>
-                  <FormLabel htmlFor='username'>First name</FormLabel>
-                  <FormError>{errors.firstName?.message}</FormError>
+                  <FormLabel htmlFor='firstName'>First name</FormLabel>
+                  <FormError>{formState.errors.firstName?.message}</FormError>
                </FormInfo>
                <FormTextInput
                   placeholder='Jane'
-                  formRegister={register('firstName', {
-                     required: 'First name is required.',
-                     minLength: {
-                        value: 2,
-                        message:
-                           'First name must be greater than two characters. ',
-                     },
-                     validate: (firstName) =>
-                        /[^0-9!@#$%^&*(),]+/.test(firstName) ||
-                        'First name is invalid.',
-                  })}
-                  error={!!errors.firstName}
+                  formValidationSchema={firstNameValidationSchema}
+                  error={!!formState.errors.firstName}
                   type='text'
                   id='firstName'
                />
@@ -83,22 +128,12 @@ const RegisterForm: FunctionComponent<{}> = () => {
             <div className='md:w-1/2 w-full md:pl-3 mb-3 md:mb-0'>
                <FormInfo>
                   <FormLabel htmlFor='username'>Last name</FormLabel>
-                  <FormError>{errors.lastName?.message}</FormError>
+                  <FormError>{formState.errors.lastName?.message}</FormError>
                </FormInfo>
                <FormTextInput
                   placeholder='Doe'
-                  formRegister={register('lastName', {
-                     required: 'Last name is required.',
-                     minLength: {
-                        value: 2,
-                        message:
-                           'Last name must be greater than two characters. ',
-                     },
-                     validate: (lastName) =>
-                        /[^0-9!@#$%^&*(),]+/.test(lastName) ||
-                        'Last name is invalid.',
-                  })}
-                  error={!!errors.lastName}
+                  formValidationSchema={lastNameValidationSchema}
+                  error={!!formState.errors.lastName}
                   type='text'
                   id='lastName'
                />
@@ -107,28 +142,12 @@ const RegisterForm: FunctionComponent<{}> = () => {
          <FormSegment>
             <FormInfo>
                <FormLabel htmlFor='username'>Username</FormLabel>
-               <FormError>
-                  {errors.username?.message || serverResponseErrors.username}
-               </FormError>
+               <FormError>{formState.errors.username?.message}</FormError>
             </FormInfo>
             <FormTextInput
                placeholder='jane.doe'
-               formRegister={register('username', {
-                  required: 'Username is required.',
-                  minLength: {
-                     value: 2,
-                     message: 'Username must be greater than two characters.',
-                  },
-                  validate: async (username) => {
-                     const response = await checkIfUsernameExists(username);
-                     const isValid =
-                        'payload' in response &&
-                        !response.payload.usernameTaken;
-
-                     return isValid || response.message;
-                  },
-               })}
-               error={!!errors.username || !!serverResponseErrors.username}
+               formValidationSchema={usernameValidationSchema}
+               error={!!formState.errors.username}
                type='text'
                id='username'
             />
@@ -136,42 +155,26 @@ const RegisterForm: FunctionComponent<{}> = () => {
          <FormSegment>
             <FormInfo>
                <FormLabel htmlFor='email'>Email</FormLabel>
-               <FormError>{errors.email?.message}</FormError>
+               <FormError>{formState.errors.email?.message}</FormError>
             </FormInfo>
             <FormTextInput
                id='email'
                placeholder='jane.doe@example.com'
-               formRegister={register('email', {
-                  required: 'Email is required.',
-                  pattern: { message: 'Email is invalid.', value: emailRegex },
-                  validate: async (email) => {
-                     const response = await checkIfEmailExists(email);
-                     const isValid =
-                        'payload' in response && !response.payload.emailTaken;
-
-                     return isValid || response.message;
-                  },
-               })}
-               error={!!errors.email}
+               formValidationSchema={emailValidationSchema}
+               error={!!formState.errors.email}
                type='email'
             />
          </FormSegment>
          <FormSegment>
             <FormInfo>
                <FormLabel htmlFor='password'>Password</FormLabel>
-               <FormError>{errors.password?.message}</FormError>
+               <FormError>{formState.errors.password?.message}</FormError>
             </FormInfo>
             <FormTextInput
                id='password'
                placeholder='password'
-               formRegister={register('password', {
-                  required: 'Password is required.',
-                  minLength: {
-                     value: 8,
-                     message: 'Password must be eight or more characters.',
-                  },
-               })}
-               error={!!errors.password}
+               formValidationSchema={passwordValidationSchema}
+               error={!!formState.errors.password}
                type='password'
             />
          </FormSegment>
@@ -179,19 +182,12 @@ const RegisterForm: FunctionComponent<{}> = () => {
          <FormSegment>
             <FormInfo>
                <FormLabel htmlFor='date-of-birth'>Date of birth</FormLabel>
-               <FormError>{errors.dateOfBirth?.message}</FormError>
+               <FormError>{formState.errors.dateOfBirth?.message}</FormError>
             </FormInfo>
             <FormTextInput
                id='date-of-birth'
-               formRegister={register('dateOfBirth', {
-                  required: 'Date of birth is required.',
-                  validate: (dateOfBirth) =>
-                     validateDateOfBirth(
-                        new Date(Date.parse(dateOfBirth)),
-                        19,
-                     ) || 'You are not old enough to use this application.',
-               })}
-               error={!!errors.dateOfBirth}
+               formValidationSchema={dateOfBirthValidationSchema}
+               error={!!formState.errors.dateOfBirth}
                type='date'
             />
          </FormSegment>

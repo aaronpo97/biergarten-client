@@ -1,6 +1,6 @@
 import formatISO from 'date-fns/formatISO';
 import saveTokens from './utils/saveTokens';
-import getPostRequestHeaders from './utils/requestHeaders/postRequestHeaders';
+import getAuthRequestHeaders from './utils/requestHeaders/authRequestHeaders';
 import SuccessResponse from './utils/response/SuccessResponse';
 import ErrorResponse from './utils/response/ErrorResponse';
 
@@ -27,7 +27,7 @@ const registerUser = async (
    };
 
    const method = 'POST';
-   const headers = getPostRequestHeaders();
+   const headers = getAuthRequestHeaders();
    const body = JSON.stringify(user);
 
    const response = await fetch('/api/users/register', {

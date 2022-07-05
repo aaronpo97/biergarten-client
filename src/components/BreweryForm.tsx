@@ -2,6 +2,7 @@ import { FunctionComponent } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import createBreweryPost from '../api/createBreweryPost';
+import editBreweryPost from '../api/editBreweryPost';
 import FormButton from './ui/forms/FormButton';
 import FormError from './ui/forms/FormError';
 import FormInfo from './ui/forms/FormInfo';
@@ -19,23 +20,20 @@ interface IFormInput {
 
 interface BreweryFormProps {
    type: 'edit' | 'create';
-   // eslint-disable-next-line react/require-default-props
    defaultValues?: IFormInput;
+   postId?: string;
 }
 const BreweryForm: FunctionComponent<BreweryFormProps> = ({
    type,
    defaultValues,
+   postId,
 }) => {
-   const {
-      register,
-      handleSubmit,
-      formState: { errors },
-   } = useForm<IFormInput>({
+   const { register, handleSubmit, formState } = useForm<IFormInput>({
       defaultValues: {
          name: defaultValues?.name,
          description: defaultValues?.description,
          location: defaultValues?.location,
-         phoneNumber: defaultValues?.location,
+         phoneNumber: defaultValues?.phoneNumber,
       },
    });
 
@@ -49,15 +47,23 @@ const BreweryForm: FunctionComponent<BreweryFormProps> = ({
                   if (!('payload' in response)) {
                      return;
                   }
-                  const { id } = response.payload;
-                  navigate(`/breweries/${id}`);
+                  const { id: newBreweryId } = response.payload;
+                  navigate(`/breweries/${newBreweryId}`);
                })
-               .catch((error) => {
-                  console.error(error);
-               });
+               .catch();
             break;
 
          case 'edit':
+            if (!postId) {
+               throw new Error();
+            }
+            editBreweryPost(postId, data).then((response) => {
+               if (!('payload' in response)) {
+                  return;
+               }
+
+               navigate(`/breweries/${postId}`);
+            });
             break;
 
          default:
@@ -66,34 +72,44 @@ const BreweryForm: FunctionComponent<BreweryFormProps> = ({
             );
       }
    };
+
+   const nameValidationSchema = register('name', {
+      required: 'Brewery name is required.',
+   });
+   const locationValidationSchema = register('location', {
+      required: 'Brewery location is required.',
+   });
+   const descriptionValidationSchema = register('description', {
+      required: 'Brewery description is required.',
+   });
+   const phoneNumberValidationSchema = register('phoneNumber', {
+      required: 'Brewery phone number is required.',
+   });
+
    return (
       <form onSubmit={handleSubmit(onSubmit)}>
          <FormInfo>
             <FormLabel htmlFor='name'>Name</FormLabel>
-            <FormError>{errors.name?.message}</FormError>
+            <FormError>{formState.errors.name?.message}</FormError>
          </FormInfo>
          <FormSegment>
             <FormTextInput
                placeholder='Lorem Ipsum Brewing Company'
-               formRegister={register('name', {
-                  required: 'Brewery name is required.',
-               })}
-               error={!!errors.name}
+               formValidationSchema={nameValidationSchema}
+               error={!!formState.errors.name}
                type='text'
                id='name'
             />
          </FormSegment>
          <FormInfo>
             <FormLabel htmlFor='location'>location</FormLabel>
-            <FormError>{errors.location?.message}</FormError>
+            <FormError>{formState.errors.location?.message}</FormError>
          </FormInfo>
          <FormSegment>
             <FormTextInput
                placeholder='123 Any Street, City, Country'
-               formRegister={register('location', {
-                  required: 'Brewery location is required.',
-               })}
-               error={!!errors.location}
+               formValidationSchema={locationValidationSchema}
+               error={!!formState.errors.location}
                type='text'
                id='location'
             />
@@ -101,30 +117,26 @@ const BreweryForm: FunctionComponent<BreweryFormProps> = ({
 
          <FormInfo>
             <FormLabel htmlFor='description'>About</FormLabel>
-            <FormError>{errors.description?.message}</FormError>
+            <FormError>{formState.errors.description?.message}</FormError>
          </FormInfo>
          <FormSegment>
             <FormTextArea
                placeholder='Inventore quidem minus et. Maxime aut velit quos ex sed qui. Dolor sapiente harum molestiae fugit omnis itaque et quisquam velit. Deserunt autem laudantium ea ab accusamus.'
-               formRegister={register('description', {
-                  required: 'Brewery description is required.',
-               })}
-               error={!!errors.description}
+               formValidationSchema={descriptionValidationSchema}
+               error={!!formState.errors.description}
                id='description'
                rows={6}
             />
          </FormSegment>
          <FormInfo>
             <FormLabel htmlFor='phone number'>Phone number</FormLabel>
-            <FormError>{errors.phoneNumber?.message}</FormError>
+            <FormError>{formState.errors.phoneNumber?.message}</FormError>
          </FormInfo>
          <FormSegment>
             <FormTextInput
                placeholder='phone number'
-               formRegister={register('phoneNumber', {
-                  required: 'Brewery phone number is required.',
-               })}
-               error={!!errors.phoneNumber}
+               formValidationSchema={phoneNumberValidationSchema}
+               error={!!formState.errors.phoneNumber}
                type='text'
                id='phone-number'
             />
@@ -135,4 +147,13 @@ const BreweryForm: FunctionComponent<BreweryFormProps> = ({
    );
 };
 
+BreweryForm.defaultProps = {
+   defaultValues: {
+      description: '',
+      location: '',
+      name: '',
+      phoneNumber: '',
+   },
+   postId: undefined,
+};
 export default BreweryForm;

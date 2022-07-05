@@ -24,7 +24,6 @@ const LoginForm: FunctionComponent<{}> = () => {
 
    const { setCurrentUser } = useContext(AuthContext) as AuthContextValue;
    const [errorMessage, setErrorMessage] = useState<null | string>(null);
-
    const navigate = useNavigate();
 
    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -41,6 +40,19 @@ const LoginForm: FunctionComponent<{}> = () => {
          setErrorMessage(response.message);
       }
    };
+
+   const usernameValidationSchema = register('username', {
+      required: 'Username is required.',
+   });
+
+   const passwordValidationSchema = register('password', {
+      required: 'Password is required.',
+      minLength: {
+         value: 8,
+         message: 'Password must be eight or more characters.',
+      },
+   });
+
    return (
       <form onSubmit={handleSubmit(onSubmit)}>
          <FormInfo>
@@ -53,9 +65,7 @@ const LoginForm: FunctionComponent<{}> = () => {
          <FormSegment>
             <FormTextInput
                placeholder='username'
-               formRegister={register('username', {
-                  required: 'Username is required.',
-               })}
+               formValidationSchema={usernameValidationSchema}
                error={!!errors.username}
                type='text'
                id='username'
@@ -71,13 +81,7 @@ const LoginForm: FunctionComponent<{}> = () => {
          <FormSegment>
             <FormTextInput
                placeholder='password'
-               formRegister={register('password', {
-                  required: 'Password is required.',
-                  minLength: {
-                     value: 8,
-                     message: 'Password must be eight or more characters.',
-                  },
-               })}
+               formValidationSchema={passwordValidationSchema}
                error={!!errors.password}
                type='password'
                id='password'

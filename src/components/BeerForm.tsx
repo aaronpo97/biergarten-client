@@ -49,10 +49,6 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
    const [breweries, setBreweries] = useState<BreweryPostI[]>([]);
 
    useEffect(() => {
-      if (type === 'edit') {
-         return;
-      }
-
       getAllBreweryPosts({ paginated: false }).then((response) => {
          if (!('payload' in response)) {
             return;
@@ -78,7 +74,7 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
          <FormSegment>
             <FormTextInput
                placeholder='Lorem Ipsum Lager'
-               formRegister={register('name', {
+               formValidationSchema={register('name', {
                   required: 'Beer name is required.',
                })}
                error={!!errors.name}
@@ -118,7 +114,7 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
                </FormInfo>
                <FormTextInput
                   placeholder='12'
-                  formRegister={register('abv', {
+                  formValidationSchema={register('abv', {
                      required: 'ABV is required.',
                      valueAsNumber: true,
                      max: { value: 50, message: 'ABV must be less than 50%.' },
@@ -140,7 +136,7 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
                </FormInfo>
                <FormTextInput
                   placeholder='52'
-                  formRegister={register('ibu', {
+                  formValidationSchema={register('ibu', {
                      required: 'IBU is required.',
                      min: {
                         value: 2,
@@ -164,7 +160,7 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
             <FormTextArea
                placeholder='Ratione cumque quas quia aut impedit ea culpa facere. Ut in sit et quas reiciendis itaque.'
                error={!!errors.description}
-               formRegister={register('description', {
+               formValidationSchema={register('description', {
                   required: 'Beer description is required.',
                })}
                id='description'
@@ -180,7 +176,7 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
             <FormTextInput
                placeholder='Lagered Ale'
                error={!!errors.type}
-               formRegister={register('type', {
+               formValidationSchema={register('type', {
                   required: 'Beer type is required.',
                })}
                id='type'
