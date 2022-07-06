@@ -6,7 +6,7 @@ interface FormInfoProps {
 }
 
 const FormSegment: FunctionComponent<FormInfoProps> = ({ children }) => (
-   <div className='mb-3'>{children}</div>
+   <div className='mb-2'>{children}</div>
 );
 
 export default FormSegment;

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import createBeerPost from '../api/createBeerPost';
 import getAllBreweryPosts from '../api/getAllBreweryPosts';
 import BreweryPostI from '../types/BreweryPostI';
+import isValidUuid from '../util/isValidUuid';
 import FormButton from './ui/forms/FormButton';
 import FormError from './ui/forms/FormError';
 import FormInfo from './ui/forms/FormInfo';
@@ -65,8 +66,36 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
          navigate(`/beers/${response.payload.id}`);
       });
    };
+
+   const nameValidationSchema = register('name', {
+      required: 'Beer name is required.',
+   });
+   const breweryValidationSchema = register('breweryId', {
+      required: 'Brewery name is required.',
+      validate: (breweryId) => isValidUuid(breweryId) || 'Invalid brewery.',
+   });
+   const abvValidationSchema = register('abv', {
+      required: 'ABV is required.',
+      valueAsNumber: true,
+      max: { value: 50, message: 'ABV must be less than 50%.' },
+      min: {
+         value: 0.1,
+         message: 'ABV must be greater than 0.1%',
+      },
+      validate: (abv) => !Number.isNaN(abv) || 'ABV is invalid.',
+   });
+   const ibuValidationSchema = register('ibu', {
+      required: 'IBU is required.',
+      min: {
+         value: 2,
+         message: 'IBU must be greater than 2.',
+      },
+      valueAsNumber: true,
+      validate: (ibu) => !Number.isNaN(ibu) || 'IBU is invalid.',
+   });
+
    return (
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form className='form-control' onSubmit={handleSubmit(onSubmit)}>
          <FormInfo>
             <FormLabel htmlFor='name'>Name</FormLabel>
             <FormError>{errors.name?.message}</FormError>
@@ -74,9 +103,7 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
          <FormSegment>
             <FormTextInput
                placeholder='Lorem Ipsum Lager'
-               formValidationSchema={register('name', {
-                  required: 'Beer name is required.',
-               })}
+               formValidationSchema={nameValidationSchema}
                error={!!errors.name}
                type='text'
                id='name'
@@ -96,9 +123,7 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
                         value: brewery.id,
                         text: brewery.name,
                      }))}
-                     formRegister={register('breweryId', {
-                        required: 'Brewery is required.',
-                     })}
+                     formRegister={breweryValidationSchema}
                      placeholder='Brewery'
                      message='Pick a brewery'
                   />
@@ -107,44 +132,27 @@ const BeerForm: FunctionComponent<BeerFormProps> = ({
          )}
 
          <div className='md:mb-3 flex flex-wrap sm:text-xs'>
-            <div className='md:w-1/2 w-full md:pr-3 mb-3 md:mb-0'>
+            <div className='md:w-1/2 w-full md:pr-3 mb-2 md:mb-0'>
                <FormInfo>
                   <FormLabel htmlFor='abv'>ABV</FormLabel>
                   <FormError>{errors.abv?.message}</FormError>
                </FormInfo>
                <FormTextInput
                   placeholder='12'
-                  formValidationSchema={register('abv', {
-                     required: 'ABV is required.',
-                     valueAsNumber: true,
-                     max: { value: 50, message: 'ABV must be less than 50%.' },
-                     min: {
-                        value: 0.1,
-                        message: 'ABV must be greater than 0.1%',
-                     },
-                     validate: (abv) => !Number.isNaN(abv) || 'ABV is invalid.',
-                  })}
+                  formValidationSchema={abvValidationSchema}
                   error={!!errors.abv}
                   type='text'
                   id='abv'
                />
             </div>
-            <div className='md:w-1/2 w-full md:pl-3 mb-3 md:mb-0'>
+            <div className='md:w-1/2 w-full md:pl-3 mb-2 md:mb-0'>
                <FormInfo>
                   <FormLabel htmlFor='ibu'>IBU</FormLabel>
                   <FormError>{errors.ibu?.message}</FormError>
                </FormInfo>
                <FormTextInput
                   placeholder='52'
-                  formValidationSchema={register('ibu', {
-                     required: 'IBU is required.',
-                     min: {
-                        value: 2,
-                        message: 'IBU must be greater than 2.',
-                     },
-                     valueAsNumber: true,
-                     validate: (ibu) => !Number.isNaN(ibu),
-                  })}
+                  formValidationSchema={ibuValidationSchema}
                   error={!!errors.ibu}
                   type='text'
                   id='lastName'

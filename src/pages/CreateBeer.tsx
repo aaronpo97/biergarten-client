@@ -7,7 +7,7 @@ interface CreateBeerProps {}
 
 const CreateBeer: FunctionComponent<CreateBeerProps> = () => (
    <main className='h-screen'>
-      <div className='flex flex-center justify-center mt-14 text-gray-800'>
+      <div className='flex flex-center justify-center mt-14'>
          <section className='xl:w-7/12 lg:w-8/12 md:w-9/12 w-10/12 '>
             <div className='font-semibold text-center text-3xl'>
                <FontAwesomeIcon icon={faBeerMugEmpty} className='mb-1' />

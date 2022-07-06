@@ -5,7 +5,7 @@ interface HeaderProps {
 }
 
 const PageHeader: FunctionComponent<HeaderProps> = ({ children }) => (
-   <header className='h-96 bg-gray-900 flex items-center justify-center flex-col'>
+   <header className='h-96 bg-primary flex items-center justify-center flex-col'>
       {children}
    </header>
 );

@@ -20,17 +20,13 @@ const FormSelect: FunctionComponent<FormSelectProps> = ({
 }) => (
    <select
       id={id}
-      className={`form-select block w-full px-3 py-1 h-100 lg:text-lg md:text-lg text-sm rounded-lg font-normal text-gray-700 bg-white bg-clip-padding border border-solid transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:outline-none ${
-         !error
-            ? 'border-gray-300 focus:border-blue-600'
-            : 'border-red-500 focus:border-red-500'
+      className={`select select-bordered block w-full rounded-lg bg-base-200 ${
+         error ? 'select-error' : ''
       }`}
       placeholder={placeholder}
       {...formRegister}
    >
-      <option selected value={undefined}>
-         {message}
-      </option>
+      <option value=''>{message}</option>
       {options.map(({ value, text }) => (
          <option key={value} value={value}>
             {text}

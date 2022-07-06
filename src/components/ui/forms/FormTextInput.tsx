@@ -23,10 +23,8 @@ const FormTextInput: FunctionComponent<FormInputProps> = ({
       id={id}
       type={type}
       placeholder={placeholder}
-      className={`form-input block w-full px-3 py-1 lg:text-lg md:text-lg text-sm rounded-lg font-normal text-gray-700 bg-white bg-clip-padding border border-solid transition ease-in-out m-0 focus:text-gray-700 focus:bg-white  ${
-         !error
-            ? 'border-gray-300 focus:border-blue-600'
-            : 'border-red-800 focus:border-red-800'
+      className={`input w-full bg-base-200 transition ease-in-out rounded-lg input-bordered ${
+         error ? 'input-error' : ''
       }`}
       {...formValidationSchema}
    />

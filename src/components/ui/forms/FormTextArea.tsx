@@ -19,10 +19,8 @@ const FormTextArea: FunctionComponent<FormTextAreaProps> = ({
    <textarea
       id={id}
       placeholder={placeholder}
-      className={`block w-full px-3 py-1 resize-none lg:text-lg md:text-lg text-sm rounded-lg font-normal text-gray-700 bg-white bg-clip-padding border border-solid transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:outline-none ${
-         !error
-            ? 'border-gray-300 focus:border-blue-600'
-            : 'border-red-500 focus:border-red-500'
+      className={`textarea textarea-bordered w-full resize-none bg-base-200 rounded-lg bg-clip-padding border border-solid transition ease-in-out m-0  ${
+         error ? 'textarea-error' : ''
       }`}
       {...formValidationSchema}
       rows={rows}

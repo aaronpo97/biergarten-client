@@ -12,7 +12,7 @@ const FormError: FunctionComponent<{ children: string | undefined }> = ({
 }) =>
    children ? (
       <div
-         className='text-red-800 text-xs italic my-1 font-semibold h-3'
+         className='text-error-content text-xs italic my-1 font-semibold h-3'
          role='alert'
       >
          <FontAwesomeIcon icon={faTriangleExclamation} className='mr-2' />

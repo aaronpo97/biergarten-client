@@ -29,7 +29,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
    const navigate = useNavigate();
 
    return (
-      <nav className='sticky top-0 bg-gray-900 border-gray-200 px-4 sm:px-4 py-4'>
+      <nav className='sticky top-0 bg-primary border-gray-200 px-4 sm:px-4 py-4'>
          <div className='container flex flex-wrap justify-between items-center mx-auto'>
             <Link to='/' className='flex items-center'>
                <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
