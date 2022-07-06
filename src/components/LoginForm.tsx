@@ -3,9 +3,12 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import loginUser from '../api/loginUser';
 import AuthContext, { AuthContextValue } from '../contexts/AuthContext';
-
-import FormButton from './ui/FormButton';
-import FormTextInput from './ui/FormTextInput';
+import FormButton from './ui/forms/FormButton';
+import FormError from './ui/forms/FormError';
+import FormInfo from './ui/forms/FormInfo';
+import FormLabel from './ui/forms/FormLabel';
+import FormSegment from './ui/forms/FormSegment';
+import FormTextInput from './ui/forms/FormTextInput';
 
 interface IFormInput {
    username: string;
@@ -21,7 +24,6 @@ const LoginForm: FunctionComponent<{}> = () => {
 
    const { setCurrentUser } = useContext(AuthContext) as AuthContextValue;
    const [errorMessage, setErrorMessage] = useState<null | string>(null);
-
    const navigate = useNavigate();
 
    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -29,10 +31,8 @@ const LoginForm: FunctionComponent<{}> = () => {
       const response = await loginUser(username, password);
 
       if ('payload' in response) {
-         const { accessToken, id, refreshToken } = response.payload;
-         localStorage.setItem('accessToken', accessToken);
-         localStorage.setItem('userId', id);
-         localStorage.setItem('refreshToken', refreshToken);
+         const { id } = response.payload;
+
          setCurrentUser({ username, id });
          navigate('/beers');
       }
@@ -40,30 +40,54 @@ const LoginForm: FunctionComponent<{}> = () => {
          setErrorMessage(response.message);
       }
    };
+
+   const usernameValidationSchema = register('username', {
+      required: 'Username is required.',
+   });
+
+   const passwordValidationSchema = register('password', {
+      required: 'Password is required.',
+      minLength: {
+         value: 8,
+         message: 'Password must be eight or more characters.',
+      },
+   });
+
    return (
       <form onSubmit={handleSubmit(onSubmit)}>
-         <div className='mb-6'>
+         <FormInfo>
+            <FormLabel htmlFor='username'>Username</FormLabel>
+            <FormError>
+               {errors.username?.message ||
+                  (errorMessage as string | undefined)}
+            </FormError>
+         </FormInfo>
+         <FormSegment>
             <FormTextInput
                placeholder='username'
-               formRegister={register('username', { required: true })}
-               error={errors.username}
+               formValidationSchema={usernameValidationSchema}
+               error={!!errors.username}
                type='text'
+               id='username'
             />
-         </div>
-         <div className='mb-6'>
+         </FormSegment>
+         <FormInfo>
+            <FormLabel htmlFor='password'>Password</FormLabel>
+            <FormError>
+               {errors.password?.message ||
+                  (errorMessage as string | undefined)}
+            </FormError>
+         </FormInfo>
+         <FormSegment>
             <FormTextInput
                placeholder='password'
-               formRegister={register('password', { required: true })}
-               error={errors.password}
+               formValidationSchema={passwordValidationSchema}
+               error={!!errors.password}
                type='password'
+               id='password'
             />
-         </div>
-         {errorMessage && (
-            <div>
-               <p>{errorMessage}</p>
-            </div>
-         )}
-         <FormButton text='Login' />
+         </FormSegment>
+         <FormButton>Login</FormButton>
       </form>
    );
 };

@@ -1,6 +1,7 @@
 import BreweryPostI from '../types/BreweryPostI';
 import isValidUuid from '../util/isValidUuid';
-import authHeaders from './utils/authHeaders';
+import saveNewAccessTokenIfExists from './utils/saveNewAccessTokenIfExists';
+import getAuthHeaders from './utils/requestHeaders/getAuthHeaders';
 import ErrorResponse from './utils/response/ErrorResponse';
 import SuccessResponse from './utils/response/SuccessResponse';
 
@@ -10,9 +11,14 @@ const getBreweryPostById = async (id: string) => {
    }
 
    const response = await fetch(`/api/breweries/${id}`, {
-      headers: authHeaders,
+      headers: getAuthHeaders(),
    });
 
-   return response.json() as Promise<SuccessResponse<BreweryPostI> | ErrorResponse>;
+   const data = (await response.json()) as
+      | SuccessResponse<BreweryPostI>
+      | ErrorResponse;
+
+   saveNewAccessTokenIfExists(data);
+   return data;
 };
 export default getBreweryPostById;

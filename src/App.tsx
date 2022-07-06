@@ -15,8 +15,15 @@ import AuthContext, { CurrentUserState } from './contexts/AuthContext';
 
 import Boilerplate from './pages/Boilerplate';
 
+import CreateBrewery from './pages/CreateBrewery';
+import EditBrewery from './pages/EditBrewery';
+import CreateBeer from './pages/CreateBeer';
+
 const App: FunctionComponent<{}> = () => {
-   const [currentUser, setCurrentUser] = useState<CurrentUserState>({ username: '', id: '' });
+   const [currentUser, setCurrentUser] = useState<CurrentUserState>({
+      username: '',
+      id: '',
+   });
 
    // eslint-disable-next-line react/jsx-no-constructed-context-values
    const store = { currentUser, setCurrentUser };
@@ -30,9 +37,13 @@ const App: FunctionComponent<{}> = () => {
                   <Route path='login' element={<LoginPage />} />
                   <Route path='register' element={<RegisterPage />} />
                   <Route path='beers' element={<BeerPostsIndex />} />
+                  <Route path='beers/create' element={<CreateBeer />} />
                   <Route path='beers/:id' element={<BeerPostById />} />
+                  <Route path='beers/:edit' element={<BeerPostById />} />
                   <Route path='breweries' element={<BreweryPostIndex />} />
+                  <Route path='breweries/create' element={<CreateBrewery />} />
                   <Route path='breweries/:id' element={<BreweryPostById />} />
+                  <Route path='breweries/:id/edit' element={<EditBrewery />} />
                </Route>
             </Routes>
          </BrowserRouter>

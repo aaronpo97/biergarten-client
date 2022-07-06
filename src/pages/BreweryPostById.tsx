@@ -19,7 +19,7 @@ const BreweryPostById: FunctionComponent<BeerPostByIdProps> = () => {
             setBreweryPost(response.payload);
          }
       });
-   });
+   }, []);
 
    return <div>{JSON.stringify(breweryPost)}</div>;
 };

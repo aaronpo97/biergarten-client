@@ -1,3 +1,5 @@
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FunctionComponent, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,16 +18,17 @@ const LoginPage: FunctionComponent = () => {
    }, []);
 
    return (
-      <section className='h-screen'>
-         <div className='flex justify-center items-center flex-wrap h-full g-6 text-gray-800'>
-            <div className='md:w-8/12 lg:w-6/12 mb-12 md:mb-0'>
-               <img src='' className='w-full' alt='phone' />
-            </div>
-            <div className='md:w-8/12 lg:w-5/12 lg:ml-20'>
+      <div className='h-screen'>
+         <div className='flex flex-center justify-center mt-14 text-gray-800'>
+            <section className='xl:w-7/12 lg:w-8/12 md:w-9/12 w-10/12 '>
+               <div className='font-semibold text-center text-3xl'>
+                  <FontAwesomeIcon icon={faCircleUser} className='mb-1' />
+                  <h1 className='mb-3 '>Login</h1>
+               </div>
                <LoginForm />
-            </div>
+            </section>
          </div>
-      </section>
+      </div>
    );
 };
 

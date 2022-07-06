@@ -1,11 +1,16 @@
 import { CurrentUserState } from '../contexts/AuthContext';
-import authHeaders from './utils/authHeaders';
+import getAuthHeaders from './utils/requestHeaders/getAuthHeaders';
+import ErrorResponse from './utils/response/ErrorResponse';
 import SuccessResponse from './utils/response/SuccessResponse';
 
 const getCurrentAuthenticatedUser = async () => {
-   const response = await fetch('/api/users/current-authenticated-user', { headers: authHeaders });
-   const data = (await response.json()) as SuccessResponse<CurrentUserState>;
+   const response = await fetch('/api/users/current-authenticated-user', {
+      headers: getAuthHeaders(),
+   });
+   const data = (await response.json()) as
+      | SuccessResponse<CurrentUserState>
+      | ErrorResponse;
 
-   return data.payload;
+   return data;
 };
 export default getCurrentAuthenticatedUser;
